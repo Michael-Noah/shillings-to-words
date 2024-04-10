@@ -1,6 +1,6 @@
 {
   "name": "shillings-to-words",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Converts a currency value to word-representation (specifically for shillings currencies).",
   "main": "index.js",
   "scripts": {
