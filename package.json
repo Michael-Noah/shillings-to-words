@@ -1,7 +1,7 @@
 {
-  "name": "dollars-to-words",
-  "version": "1.1.1",
-  "description": "Converts currency value represented numerically to a words.",
+  "name": "shillings-to-words",
+  "version": "1.0.0",
+  "description": "Converts a currency value to word-representation (specifically for shillings currencies).",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -9,9 +9,11 @@
   "keywords": [
     "currency",
     "convert",
+    "shillings",
+    "uganda",
     "words"
   ],
-  "author": "Travis Smith <travis.a.smith.ja@gmail.com>",
+  "author": "Michael Noah <michaelnoah.ea@gmail.com>",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
@@ -19,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/smithtal/dollars-to-words.git"
+    "url": "https://github.com/Michael-Noah/shillings-to-words.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

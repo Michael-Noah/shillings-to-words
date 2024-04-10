@@ -1,179 +1,53 @@
-function convert(numericalRepresentation) {
-  numericalRepresentation = Number.parseFloat(numericalRepresentation);
+function convert(numberInput) {
+  let numericalRepresentation = Number.parseFloat(numberInput);
   if (Number.isNaN(numericalRepresentation)) {
-    throw new Error("Input must be a valid number.");
+      throw new Error("Input must be a valid number.");
   }
   if (numericalRepresentation < 0) {
-    throw new Error("Cannot convert negative value.");
+      throw new Error("Cannot convert negative value.");
   }
 
-  let dollarPart = 0;
-  let centPart = 0;
+  let [shillingsPart, centPart] = numericalRepresentation.toString().split('.').concat('0');
+  shillingsPart = parseInt(shillingsPart, 10);
+  centPart = parseInt(centPart.substring(0, 2).padEnd(2, '0'), 10);
 
-  if (Number.isInteger(numericalRepresentation)) {
-    dollarPart = numericalRepresentation;
-  } else {
-    const numberAsString = numericalRepresentation.toString();
-    let [dollarString, centString] = numberAsString.split(".");
+  let shillingsInWords = convertIntegerValue(shillingsPart) + " shillings";
+  let centsInWords = centPart > 0 ? ` and ${convertIntegerValue(centPart)} cents` : '';
 
-    dollarPart = Number.parseInt(dollarString);
-
-    centString =
-      centString.length > 1
-        ? `${centString[0]}${centString[1]}`
-        : `${centString}0`;
-    centPart = Number.parseInt(centString);
-  }
-
-  return `${convertIntegerValue(dollarPart)} dollars and ${convertIntegerValue(
-    centPart
-  )} cents`;
+  return shillingsInWords + centsInWords;
 }
 
-function convertIntegerValue(numericalRepresentation) {
-  if (numericalRepresentation === 0) {
-    return "zero";
-  } else if (numericalRepresentation < 10) {
-    return convertIntegerValueLessThan10(numericalRepresentation);
-  } else if (numericalRepresentation < 20) {
-    return convertIntegerValueLessThan20(numericalRepresentation);
-  } else if (numericalRepresentation < 100) {
-    return convertIntegerValueGreaterThan20AndLessThan100(
-      numericalRepresentation
-    );
-  } else {
-    return convertValue100AndOver(numericalRepresentation);
-  }
-}
+function convertIntegerValue(number) {
+  const units = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+  const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+  const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
 
-function convertIntegerValueLessThan10(digit) {
-  switch (digit) {
-    case 1:
-      return "one";
-    case 2:
-      return "two";
-    case 3:
-      return "three";
-    case 4:
-      return "four";
-    case 5:
-      return "five";
-    case 6:
-      return "six";
-    case 7:
-      return "seven";
-    case 8:
-      return "eight";
-    case 9:
-      return "nine";
-  }
-}
-
-function convertIntegerValueLessThan20(numericalRepresentation) {
-  switch (numericalRepresentation) {
-    case 10:
-      return "ten";
-    case 11:
-      return "eleven";
-    case 12:
-      return "twelve";
-    case 13:
-      return "thirteen";
-    case 14:
-      return "fourteen";
-    case 15:
-      return "fifteen";
-    case 16:
-      return "sixteen";
-    case 17:
-      return "seventeen";
-    case 18:
-      return "eighteen";
-    case 19:
-      return "nineteen";
-  }
-}
-
-function convertIntegerValueGreaterThan20AndLessThan100(
-  numericalRepresentation
-) {
-  let valueInWords = "";
-  if (numericalRepresentation < 30) {
-    valueInWords = "twenty";
-  } else if (numericalRepresentation < 40) {
-    valueInWords = "thirty";
-  } else if (numericalRepresentation < 50) {
-    valueInWords = "forty";
-  } else if (numericalRepresentation < 60) {
-    valueInWords = "fifty";
-  } else if (numericalRepresentation < 70) {
-    valueInWords = "sixty";
-  } else if (numericalRepresentation < 80) {
-    valueInWords = "seventy";
-  } else if (numericalRepresentation < 90) {
-    valueInWords = "eighty";
-  } else {
-    valueInWords = "ninety";
+  if (number < 20) {
+      return number < 10 ? units[number] : teens[number - 10];
+  } else if (number < 100) {
+      return `${tens[Math.floor(number / 10)]}${number % 10 ? "-" + units[number % 10] : ""}`;
+  } else if (number < 1000) {
+      return `${units[Math.floor(number / 100)]} hundred${number % 100 === 0 ? "" : " and " + convertIntegerValue(number % 100)}`;
   }
 
-  const remainder = numericalRepresentation % 10;
-  if (remainder > 0) {
-    valueInWords += `-${convertIntegerValueLessThan10(remainder)}`;
-  }
-  return valueInWords;
-}
+  const scaleNames = ["thousand", "million", "billion", "trillion", "quadrillion"];
+  const scaleValues = [1e3, 1e6, 1e9, 1e12, 1e15];
 
-function convertValue100AndOver(numericalRepresentation) {
-  const HUNDRED = "hundred";
-  const THOUSAND = "thousand";
-  const MILLION = "million";
-  const BILLION = "billion";
-  const TRILLION = "trillion";
-  const QUADRILLION = "quadrillion";
+  let parts = [];
 
-  const ONE_HUNDRED = 100;
-  const ONE_THOUSAND = 1000;
-  const ONE_MILLION = 1000000;
-  const ONE_BILLION = 1000000000;
-  const ONE_TRILLION = 1000000000000;
-  const ONE_QUADRILLION = 1000000000000000;
-
-  const suffix = {
-    [HUNDRED]: ONE_HUNDRED,
-    [THOUSAND]: ONE_THOUSAND,
-    [MILLION]: ONE_MILLION,
-    [BILLION]: ONE_BILLION,
-    [TRILLION]: ONE_TRILLION,
-    [QUADRILLION]: ONE_QUADRILLION,
-  };
-
-  let scale;
-  if (numericalRepresentation < ONE_THOUSAND) {
-    scale = HUNDRED;
-  } else if (numericalRepresentation < ONE_MILLION) {
-    scale = THOUSAND;
-  } else if (numericalRepresentation < ONE_BILLION) {
-    scale = MILLION;
-  } else if (numericalRepresentation < ONE_TRILLION) {
-    scale = BILLION;
-  } else if (numericalRepresentation < ONE_QUADRILLION) {
-    scale = TRILLION;
-  } else {
-    scale = QUADRILLION;
+  for (let i = scaleValues.length - 1; i >= 0; i--) {
+      if (number >= scaleValues[i]) {
+          const scaleNumber = Math.floor(number / scaleValues[i]);
+          parts.push(`${convertIntegerValue(scaleNumber)} ${scaleNames[i]}`);
+          number %= scaleValues[i];
+      }
   }
 
-  let valueInWords = `${convertIntegerValue(
-    Math.floor(numericalRepresentation / suffix[scale])
-  )} ${scale}`;
-  const remainder = numericalRepresentation % suffix[scale];
-  if (remainder > 0) {
-    if (remainder < 100) {
-      valueInWords += ` and ${convertIntegerValue(remainder)}`;
-    } else {
-      valueInWords += `, ${convertIntegerValue(remainder)}`;
-    }
+  if (number > 0) {
+      parts.push(convertIntegerValue(number));
   }
-  return valueInWords;
+
+  return parts.join(", ");
 }
 
 module.exports = convert;
