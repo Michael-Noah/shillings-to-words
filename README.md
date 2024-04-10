@@ -1,4 +1,4 @@
-# dollars-to-words
+# shillings-to-words
 
 A Javascript library that converts a currency value (in numeric representation) to word-representation (specifically for shillings currencies).
 
